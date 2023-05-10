@@ -9,6 +9,6 @@
   },
   "scripts": {
     "build": "web-ext build -s extension --overwrite-dest --filename addons-restricted-domain.xpi",
-    "lint": "web-ext lint -s extension"
+    "lint": "web-ext lint -s extension --privileged"
   }
 }
