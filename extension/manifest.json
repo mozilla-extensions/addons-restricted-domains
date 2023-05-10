@@ -8,7 +8,8 @@
       "id": "addons-restricted-domain@mozilla.com"
     }
   },
-  "permissions": ["mozillaAddons"],
+  "default_locale": "en",
+  "permissions": ["mozillaAddons", "tabs", "notifications"],
   "experiment_apis": {
     "addonsRestrictedDomain": {
       "schema": "schema.json",
@@ -19,5 +20,8 @@
         "paths": [["addonsRestrictedDomain"]]
       }
     }
+  },
+  "background": {
+    "scripts": ["background.js"]
   }
 }

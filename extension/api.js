@@ -73,7 +73,11 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
 
   getAPI(context) {
     return {
-      addonsRestrictedDomain: {},
+      addonsRestrictedDomain: {
+        getDomain() {
+          return DOMAIN;
+        },
+      },
     };
   }
 };

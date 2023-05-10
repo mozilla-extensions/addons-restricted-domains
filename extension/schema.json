@@ -1,6 +1,13 @@
 [
   {
     "namespace": "addonsRestrictedDomain",
-    "functions": []
+    "functions": [
+      {
+        "name": "getDomain",
+        "type": "function",
+        "async": true,
+        "parameters": []
+      }
+    ]
   }
 ]

@@ -1,0 +1,13 @@
+{
+  "notificationTitle": {
+    "message": "Important message from Mozilla"
+  },
+  "notificationMessage": {
+    "message": "Add-ons are temporarily disabled on $DOMAIN$.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1"
+      }
+    }
+  }
+}
