@@ -4,7 +4,7 @@
 
 ```
 $ npm install
-$ npm exec -- web-ext run -s extension --pref "extensions.experiments.enabled=true"
+$ npm run firefox
 ```
 
 ## License

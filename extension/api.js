@@ -28,18 +28,20 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
   onStartup() {
     const { extension } = this;
 
-    const restrictedDomains = getRestrictedDomains();
+    this.#ensureDomainIsRegistered();
 
-    if (!restrictedDomains.includes(DOMAIN)) {
-      // Add the domain to the list of restricted domain.
-      setRestrictedDomains([...restrictedDomains, DOMAIN]);
-    }
+    Services.prefs.addObserver(
+      RESTRICTED_DOMAINS_PREF,
+      this.#ensureDomainIsRegistered
+    );
 
     // When the add-on is uninstalled, remove the domain.
     Management.on("uninstall", async (type, { id }) => {
       if (id !== extension.id) {
         return;
       }
+
+      const restrictedDomains = getRestrictedDomains();
 
       if (restrictedDomains.includes(DOMAIN)) {
         setRestrictedDomains(
@@ -49,6 +51,24 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
         );
       }
     });
+  }
+
+  onShutdown() {
+    Services.prefs.removeObserver(
+      RESTRICTED_DOMAINS_PREF,
+      this.#ensureDomainIsRegistered
+    );
+  }
+
+  #ensureDomainIsRegistered() {
+    const { extension } = this;
+
+    const restrictedDomains = getRestrictedDomains();
+
+    if (!restrictedDomains.includes(DOMAIN)) {
+      // Add the domain to the list of restricted domain.
+      setRestrictedDomains([...restrictedDomains, DOMAIN]);
+    }
   }
 
   getAPI(context) {
