@@ -1,0 +1,14 @@
+{
+  "name": "addons-restricted-domain",
+  "version": "1.0.0",
+  "repository": "https://github.com/mozilla-extensions/addons-restricted-domain",
+  "license": "MPLv2",
+  "private": true,
+  "devDependencies": {
+    "web-ext": "7.6.2"
+  },
+  "scripts": {
+    "build": "web-ext build -s extension --overwrite-dest --filename addons-restricted-domain.xpi",
+    "lint": "web-ext lint -s extension"
+  }
+}
