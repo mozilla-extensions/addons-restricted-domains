@@ -13,10 +13,22 @@ const getRestrictedDomains = () => {
 
 const setRestrictedDomains = (domains) => {
   // Make sure we store a unique list of restricted domains.
-  Services.prefs.setStringPref(
-    RESTRICTED_DOMAINS_PREF,
-    [...new Set(domains)].join(",")
-  );
+  const prefValue = [...new Set(domains)].join(",");
+
+  // This pref can be locked by an Enterprise policy. If that's the case, we
+  // update the pref like the enterprise policy does (but without using
+  // `setAndLockPref()` to avoid a module import).
+  if (Services.prefs.prefIsLocked(RESTRICTED_DOMAINS_PREF)) {
+    Services.prefs.unlockPref(RESTRICTED_DOMAINS_PREF);
+    Services.prefs
+      .getDefaultBranch("")
+      .setStringPref(RESTRICTED_DOMAIN_PREF, prefValue);
+    Services.prefs.lockPref(RESTRICTED_DOMAIN_PREF);
+    return;
+  }
+
+  // Otherwise, we just update the pref as usual.
+  Services.prefs.setStringPref(RESTRICTED_DOMAINS_PREF, prefValue);
 };
 
 this.addonsRestrictedDomain = class extends ExtensionAPI {
