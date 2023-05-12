@@ -73,8 +73,6 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
   }
 
   #ensureDomainIsRegistered() {
-    const { extension } = this;
-
     const restrictedDomains = getRestrictedDomains();
 
     if (!restrictedDomains.includes(DOMAIN)) {
@@ -83,7 +81,7 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
     }
   }
 
-  getAPI(context) {
+  getAPI() {
     return {
       addonsRestrictedDomain: {
         getDomain() {
