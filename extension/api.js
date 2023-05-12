@@ -22,8 +22,8 @@ const setRestrictedDomains = (domains) => {
     Services.prefs.unlockPref(RESTRICTED_DOMAINS_PREF);
     Services.prefs
       .getDefaultBranch("")
-      .setStringPref(RESTRICTED_DOMAIN_PREF, prefValue);
-    Services.prefs.lockPref(RESTRICTED_DOMAIN_PREF);
+      .setStringPref(RESTRICTED_DOMAINS_PREF, prefValue);
+    Services.prefs.lockPref(RESTRICTED_DOMAINS_PREF);
     return;
   }
 
