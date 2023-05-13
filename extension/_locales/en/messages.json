@@ -1,9 +1,9 @@
 {
   "notificationTitle": {
-    "message": "Important message from Mozilla"
+    "message": "Add-ons temporarily disabled"
   },
   "notificationMessage": {
-    "message": "Add-ons are temporarily disabled on $DOMAIN$.",
+    "message": "Click to learn more. Firefox has blocked add-ons while $DOMAIN$ is open because of suspicious activity.",
     "placeholders": {
       "DOMAIN": {
         "content": "$1"
