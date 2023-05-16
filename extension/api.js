@@ -1,8 +1,4 @@
-/* global ChromeUtils, ExtensionAPI, Services */
-
-const { Management } = ChromeUtils.import(
-  "resource://gre/modules/Extension.jsm"
-);
+/* global ExtensionAPI, Services */
 
 const DOMAINS = ["example.com"];
 const RESTRICTED_DOMAINS_PREF = "extensions.webextensions.restrictedDomains";
@@ -55,21 +51,15 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
    * uninstallation of this extension.
    */
   onStartup() {
-    const { extension } = this;
-
-    const domainsToPreservePref = getPrefName(
-      extension.id,
-      "domainsToPreserve"
-    );
     // Create the "domainsToPreserve" pref when it does not exist. This pref
     // contains the list of domains in `DOMAINS` that are already present in
     // the restricted domains pref.
     if (
-      Services.prefs.getPrefType(domainsToPreservePref) ===
+      Services.prefs.getPrefType(this.#domainsToPreservePrefName) ===
       Services.prefs.PREF_INVALID
     ) {
       Services.prefs.setStringPref(
-        domainsToPreservePref,
+        this.#domainsToPreservePrefName,
         [
           ...new Set(
             getRestrictedDomains().filter((domain) => DOMAINS.includes(domain))
@@ -84,32 +74,6 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
       RESTRICTED_DOMAINS_PREF,
       this.#ensureDomainsAreRegistered
     );
-
-    // When the extension is uninstalled, remove the domains, except those that
-    // must be preserved.
-    Management.on("uninstall", (type, { id }) => {
-      if (id !== extension.id) {
-        return;
-      }
-
-      // We want to remove all the domains in `DOMAINS` that have been added by
-      // this extension to the restricted domains pref, except for the domains
-      // that were already there.
-      const domainsToPreserve = getArrayPref(domainsToPreservePref);
-      const domainsToRemove = DOMAINS.filter(
-        (domain) => !domainsToPreserve.includes(domain)
-      );
-
-      if (domainsToRemove.length > 0) {
-        setRestrictedDomains(
-          getRestrictedDomains().filter(
-            (restrictedDomain) => !domainsToRemove.includes(restrictedDomain)
-          )
-        );
-      }
-
-      Services.prefs.clearUserPref(domainsToPreservePref);
-    });
   }
 
   onShutdown() {
@@ -117,6 +81,24 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
       RESTRICTED_DOMAINS_PREF,
       this.#ensureDomainsAreRegistered
     );
+
+    // We want to remove all the domains in `DOMAINS` that have been added by
+    // this extension to the restricted domains pref, except for the domains
+    // that were already there.
+    const domainsToPreserve = getArrayPref(this.#domainsToPreservePrefName);
+    const domainsToRemove = DOMAINS.filter(
+      (domain) => !domainsToPreserve.includes(domain)
+    );
+
+    if (domainsToRemove.length > 0) {
+      setRestrictedDomains(
+        getRestrictedDomains().filter(
+          (restrictedDomain) => !domainsToRemove.includes(restrictedDomain)
+        )
+      );
+    }
+
+    Services.prefs.clearUserPref(this.#domainsToPreservePrefName);
   }
 
   #ensureDomainsAreRegistered() {
@@ -129,6 +111,10 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
       // Add the missing domains to the list of restricted domain.
       setRestrictedDomains([...restrictedDomains, ...domainsToRegister]);
     }
+  }
+
+  get #domainsToPreservePrefName() {
+    return getPrefName(this.extension.id, "domainsToPreserve");
   }
 
   getAPI() {
