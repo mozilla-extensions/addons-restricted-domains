@@ -4,11 +4,18 @@ const { Management } = ChromeUtils.import(
   "resource://gre/modules/Extension.jsm"
 );
 
-const DOMAIN = "example.com";
+const DOMAINS = ["example.com"];
 const RESTRICTED_DOMAINS_PREF = "extensions.webextensions.restrictedDomains";
 
+const getArrayPref = (prefName) => {
+  return Services.prefs
+    .getStringPref(prefName, "")
+    .split(",")
+    .filter((value) => value.length);
+};
+
 const getRestrictedDomains = () => {
-  return Services.prefs.getStringPref(RESTRICTED_DOMAINS_PREF, "").split(",");
+  return getArrayPref(RESTRICTED_DOMAINS_PREF);
 };
 
 // Returns a pref name that is scoped to this extension.
@@ -38,84 +45,97 @@ const setRestrictedDomains = (domains) => {
 
 this.addonsRestrictedDomain = class extends ExtensionAPI {
   /**
-   * On startup, add a domain to the list of restricted domains. When the
-   * add-on is uninstalled, the domain is removed from this list. When the
-   * domain is already present in the pref, we do nothing.
+   * On startup, add the domains to the list of restricted domains. When the
+   * extension is uninstalled, the domains are removed from this list. When the
+   * domains are already present in the pref, we do nothing.
    *
-   * We also create a pref (only once) to retain whether the domain is already
-   * restricted (e.g. user has already added `DOMAIN`) because we don't want to
-   * change that during uninstallation of this add-on.
+   * We also create a pref (only once) to retain whether the domains have
+   * already been restricted (e.g. user has already added one or all of the
+   * domains in `DOMAINS`) because we don't want to change that during
+   * uninstallation of this extension.
    */
   onStartup() {
     const { extension } = this;
 
-    // This pref is used to retain whether the domain is already restricted.
-    // This works because we only have a domain. If we had more, we'd need a
-    // better (and likely more complex) solution.
-    const alreadyPresentPref = getPrefName(extension.id, "alreadyPresent");
-
-    // Create the "already present" pref when it does not exist.
+    const domainsToPreservePref = getPrefName(
+      extension.id,
+      "domainsToPreserve"
+    );
+    // Create the "domainsToPreserve" pref when it does not exist. This pref
+    // contains the list of domains in `DOMAINS` that are already present in
+    // the restricted domains pref.
     if (
-      Services.prefs.getPrefType(alreadyPresentPref) ===
+      Services.prefs.getPrefType(domainsToPreservePref) ===
       Services.prefs.PREF_INVALID
     ) {
-      Services.prefs.setBoolPref(
-        alreadyPresentPref,
-        getRestrictedDomains().includes(DOMAIN)
+      Services.prefs.setStringPref(
+        domainsToPreservePref,
+        [
+          ...new Set(
+            getRestrictedDomains().filter((domain) => DOMAINS.includes(domain))
+          ),
+        ].join(",")
       );
     }
 
-    this.#ensureDomainIsRegistered();
+    this.#ensureDomainsAreRegistered();
 
     Services.prefs.addObserver(
       RESTRICTED_DOMAINS_PREF,
-      this.#ensureDomainIsRegistered
+      this.#ensureDomainsAreRegistered
     );
 
-    // When the add-on is uninstalled, remove the domain.
-    Management.on("uninstall", async (type, { id }) => {
+    // When the extension is uninstalled, remove the domains, except those that
+    // must be preserved.
+    Management.on("uninstall", (type, { id }) => {
       if (id !== extension.id) {
         return;
       }
 
-      // Only remove the domain if it wasn't already present before.
-      if (!Services.prefs.getBoolPref(alreadyPresentPref, false)) {
-        const restrictedDomains = getRestrictedDomains();
+      // We want to remove all the domains in `DOMAINS` that have been added by
+      // this extension to the restricted domains pref, except for the domains
+      // that were already there.
+      const domainsToPreserve = getArrayPref(domainsToPreservePref);
+      const domainsToRemove = DOMAINS.filter(
+        (domain) => !domainsToPreserve.includes(domain)
+      );
 
-        if (restrictedDomains.includes(DOMAIN)) {
-          setRestrictedDomains(
-            restrictedDomains.filter(
-              (restrictedDomain) => restrictedDomain !== DOMAIN
-            )
-          );
-        }
+      if (domainsToRemove.length > 0) {
+        setRestrictedDomains(
+          getRestrictedDomains().filter(
+            (restrictedDomain) => !domainsToRemove.includes(restrictedDomain)
+          )
+        );
       }
 
-      Services.prefs.clearUserPref(alreadyPresentPref);
+      Services.prefs.clearUserPref(domainsToPreservePref);
     });
   }
 
   onShutdown() {
     Services.prefs.removeObserver(
       RESTRICTED_DOMAINS_PREF,
-      this.#ensureDomainIsRegistered
+      this.#ensureDomainsAreRegistered
     );
   }
 
-  #ensureDomainIsRegistered() {
+  #ensureDomainsAreRegistered() {
     const restrictedDomains = getRestrictedDomains();
 
-    if (!restrictedDomains.includes(DOMAIN)) {
-      // Add the domain to the list of restricted domain.
-      setRestrictedDomains([...restrictedDomains, DOMAIN]);
+    const domainsToRegister = DOMAINS.filter(
+      (domain) => !restrictedDomains.includes(domain)
+    );
+    if (domainsToRegister.length > 0) {
+      // Add the missing domains to the list of restricted domain.
+      setRestrictedDomains([...restrictedDomains, ...domainsToRegister]);
     }
   }
 
   getAPI() {
     return {
       addonsRestrictedDomain: {
-        getDomain() {
-          return DOMAIN;
+        getDomains() {
+          return DOMAINS;
         },
       },
     };
