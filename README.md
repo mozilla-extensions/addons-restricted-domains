@@ -11,6 +11,9 @@ $ npm run firefox
 
 This extension uses the following prefs:
 
+- `extensions.webextensions.addons-restricted-domains@mozilla.com.disabled`: set
+  to `true`, it disables the extension's behavior. This pref does not exist by
+  default.
 - `extensions.webextensions.addons-restricted-domains@mozilla.com.domainsToPreserve`:
   this _internal_ pref is used to preserve (some of the) domains that have been
   restricted before the extension is started for the first time. This is mainly
