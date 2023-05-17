@@ -3,7 +3,7 @@
     "message": "Add-ons temporarily disabled"
   },
   "notificationMessage": {
-    "message": "Click to learn more. Firefox has blocked add-ons while $DOMAIN$ is open because of suspicious activity.",
+    "message": "Click to learn more. Firefox has disabled add-ons while $DOMAIN$ is open because of suspicious activity.",
     "placeholders": {
       "DOMAIN": {
         "content": "$1"

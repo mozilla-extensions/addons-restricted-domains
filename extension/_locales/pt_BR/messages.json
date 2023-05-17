@@ -3,7 +3,7 @@
     "message": "Extensões temporariamente desabilitadas"
   },
   "notificationMessage": {
-    "message": "Clique para saber mais. O Firefox bloqueou as extensões enquanto $DOMAIN$ estiver aberto devido a atividades suspeitas.",
+    "message": "Clique para saber mais. O Firefox desabilitou as extensões enquanto $DOMAIN$ estiver aberto devido a atividades suspeitas.",
     "placeholders": {
       "DOMAIN": {
         "content": "$1"
