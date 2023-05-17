@@ -20,7 +20,7 @@ const showNotification = (domain) => {
 // A list of domains for which the user has already been notified.
 const DOMAINS_ALREADY_NOTIFIED = [];
 
-browser.addonsRestrictedDomain.getDomains().then(async (DOMAINS) => {
+browser.addonsRestrictedDomains.getDomains().then(async (DOMAINS) => {
   // This event listener is called when the user clicks the notification.
   browser.notifications.onClicked.addListener(async (id) => {
     // We open the SUMO page in a new tab and, assuming the tab is created, we

@@ -1,6 +1,6 @@
 [
   {
-    "namespace": "addonsRestrictedDomain",
+    "namespace": "addonsRestrictedDomains",
     "functions": [
       {
         "name": "getDomains",
