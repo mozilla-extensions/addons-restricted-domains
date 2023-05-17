@@ -7,6 +7,19 @@
         "type": "function",
         "async": true,
         "parameters": []
+      },
+      {
+        "name": "isDisabled",
+        "type": "function",
+        "async": true,
+        "parameters": []
+      }
+    ],
+    "events": [
+      {
+        "name": "onEnabled",
+        "type": "function",
+        "parameters": []
       }
     ]
   }
