@@ -39,7 +39,7 @@ const setRestrictedDomains = (domains) => {
   Services.prefs.setStringPref(RESTRICTED_DOMAINS_PREF, prefValue);
 };
 
-this.addonsRestrictedDomain = class extends ExtensionAPI {
+this.addonsRestrictedDomains = class extends ExtensionAPI {
   /**
    * On startup, add the domains to the list of restricted domains. When the
    * extension is uninstalled, the domains are removed from this list. When the
@@ -119,7 +119,7 @@ this.addonsRestrictedDomain = class extends ExtensionAPI {
 
   getAPI() {
     return {
-      addonsRestrictedDomain: {
+      addonsRestrictedDomains: {
         getDomains() {
           return DOMAINS;
         },

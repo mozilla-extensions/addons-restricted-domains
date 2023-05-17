@@ -1,23 +1,23 @@
 {
   "manifest_version": 2,
-  "name": "Add-ons Restricted Domain",
+  "name": "Add-ons Restricted Domains",
   "version": "1.0.0",
   "hidden": true,
   "browser_specific_settings": {
     "gecko": {
-      "id": "addons-restricted-domain@mozilla.com"
+      "id": "addons-restricted-domains@mozilla.com"
     }
   },
   "default_locale": "en",
   "permissions": ["mozillaAddons", "tabs", "notifications"],
   "experiment_apis": {
-    "addonsRestrictedDomain": {
+    "addonsRestrictedDomains": {
       "schema": "schema.json",
       "parent": {
         "scopes": ["addon_parent"],
         "script": "api.js",
         "events": ["startup"],
-        "paths": [["addonsRestrictedDomain"]]
+        "paths": [["addonsRestrictedDomains"]]
       }
     }
   },
