@@ -1,6 +1,6 @@
 /* global ExtensionAPI, ExtensionCommon, Services */
 
-const DOMAINS = ["example.com"];
+const DOMAINS = ["example.com", "example.org"];
 const RESTRICTED_DOMAINS_PREF = "extensions.webextensions.restrictedDomains";
 
 const getArrayPref = (prefName) => {
