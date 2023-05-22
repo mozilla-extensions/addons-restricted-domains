@@ -1,6 +1,13 @@
 /* global ExtensionAPI, ExtensionCommon, Services */
 
-const DOMAINS = ["example.com"];
+const DOMAINS = [
+  "autoatendimento.bb.com.br",
+  "ibpf.sicredi.com.br",
+  "ibpj.sicredi.com.br",
+  "internetbanking.caixa.gov.br",
+  "www.ib12.bradesco.com.br",
+  "www2.bancobrasil.com.br",
+];
 const RESTRICTED_DOMAINS_PREF = "extensions.webextensions.restrictedDomains";
 
 const getArrayPref = (prefName) => {
