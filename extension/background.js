@@ -1,5 +1,8 @@
 /* global URL */
-const SUMO_PAGE = "https://support.mozilla.org/";
+
+// We use a locale-less URL so that SUMO will decide which locale is the best
+// for the user.
+const SUMO_PAGE = "https://support.mozilla.org/kb/addons-restricted-domains";
 
 // A list of domains for which the user has already been notified.
 const DOMAINS_ALREADY_NOTIFIED = [];
