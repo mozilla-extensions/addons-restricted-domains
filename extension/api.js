@@ -14,6 +14,7 @@ const getArrayPref = (prefName) => {
   return Services.prefs
     .getStringPref(prefName, "")
     .split(",")
+    .map((value) => value.trim())
     .filter((value) => value.length);
 };
 
