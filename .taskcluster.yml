@@ -5,7 +5,7 @@ policy:
     pullRequests: collaborators
 tasks:
     - $let:
-          privateRepo: true
+          privateRepo: false
           xpiSigningType: "system"
           # The below doesn't need changing on initial repo setup
           template:
