@@ -167,10 +167,9 @@ this.addonsRestrictedDomains = class extends ExtensionAPI {
     const domainsToRegister = DOMAINS.filter(
       (domain) => !restrictedDomains.includes(domain)
     );
-    if (domainsToRegister.length > 0) {
-      // Add the missing domains to the list of restricted domain.
-      setRestrictedDomains([...restrictedDomains, ...domainsToRegister]);
-    }
+    // Add the missing domains to the list of restricted domain. We
+    // unconditionally update the pref to remove duplicate domains (if any).
+    setRestrictedDomains([...restrictedDomains, ...domainsToRegister]);
   }
 
   get #isDisabled() {
